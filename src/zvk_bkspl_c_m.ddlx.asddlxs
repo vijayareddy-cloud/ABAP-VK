@@ -1,0 +1,38 @@
+@Metadata.layer: #CORE
+//@UI.headerInfo:{ typeName: 'BookingSupplement',
+//                typeNamePlural: 'BookingSupplements',
+//               title: { type: #STANDARD,value: 'BookingSupplementId' } },
+//               presentationVariant: [{ sortOrder: [{ by:'BookingSupplementId',direction: #ASC }] }]
+//                
+//                
+annotate entity ZVK_BKSPL_C with
+{
+@UI.facet: [{ id: 'BookingSupplement' ,
+            purpose: #STANDARD,
+            type: #IDENTIFICATION_REFERENCE,
+            label: 'BookingSupplement',
+            position: 10
+            }]
+  @UI.hidden: true
+  BooksupplUuid;
+  @UI.hidden: true
+  TravelUuid;
+  @UI.hidden: true
+  BookingUuid;
+  @UI.lineItem: [{ position: 10,importance: #HIGH  }]
+  @UI.identification: [{ position: 10,importance: #HIGH,label: 'BookingSupplementId' }]
+  BookingSupplementId;
+  @UI.lineItem: [{ position: 20,importance: #HIGH  }]
+  @UI.identification: [{ position: 20,importance: #HIGH,label: 'SupplementId' }]
+  SupplementId;
+  @UI.lineItem: [{ position: 30,importance: #HIGH  }]
+  @UI.identification: [{ position: 30,importance: #HIGH,label: 'Price' }]
+  Price;
+
+  //CurrencyCode;
+  //    LocalLastChangedAt;
+  /* Associations */
+  //    _Booking;
+  //    _Travel;
+
+}

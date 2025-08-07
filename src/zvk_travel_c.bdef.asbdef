@@ -1,0 +1,50 @@
+
+
+
+projection;
+strict ( 2 );
+use draft; //draft related
+define behavior for ZVK_TRAVEL_C alias Travel
+use etag //draft related
+{
+  use create;
+  use update;
+  use delete;
+
+  //draft related
+  use action Edit;
+  use action Discard;
+  use action Resume;
+  use action Activate;
+  use action Prepare;
+  //draft related
+
+  use action AcceptTravel;
+  use action RejectTravel;
+  use action DeductDiscount;
+  use function GetDefaultsForDeductDiscount;
+
+  use action ValidateCustomerId;
+  use action ValidateAgencyId;
+  use action ValidateDatesVal;
+
+  use association _Booking { create; with draft; } //draft related
+}
+
+define behavior for ZVK_BOOKING_C alias Booking
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; } //draft related
+  use association _Bookingsupplement { create; with draft; } //draft related
+}
+
+define behavior for ZVK_BKSPL_C alias Bookingsuppl
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; } //draft related
+  use association _Booking { with draft; } //draft related
+}

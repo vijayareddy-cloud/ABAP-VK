@@ -1,0 +1,87 @@
+@Metadata.layer: #CORE
+@UI:{ headerInfo:{typeName: 'Travel',
+                    typeNamePlural: 'Travels',
+                    title:{ type: #STANDARD , value: 'TravelId'} },
+                    presentationVariant: [{ sortOrder: [{by: 'TravelId', direction: #ASC }]  }] }
+annotate entity ZVK_TRAVEL_C with
+{
+
+  @UI.facet: [{
+              id: 'Travel',
+              purpose: #STANDARD,  //Based on our requirement we will choose the purpose(#FILTER,#HEADER, #QUICK_VIEW,#QUICK_CREATE,#STANDARD )
+              type: #IDENTIFICATION_REFERENCE,
+              label: 'Travel',
+              position: 10
+             },
+
+             {
+             id: 'Booking',
+             purpose: #STANDARD,
+             type: #LINEITEM_REFERENCE, //you are providing LINEITEM_REFERENCE but from where it needs to get( from Target element it will get)
+             label: 'Bookings',
+             targetElement: '_Booking',
+             position: 20
+             }
+             ]
+
+  @UI.hidden: true //this means below the Traveluuid is hidden in the app
+
+  TravelUuid;
+  @UI.lineItem: [{ position: 10, importance: #HIGH },
+                { type: #FOR_ACTION, dataAction: 'AcceptTravel', label: 'Accept Travel' ,invocationGrouping: #CHANGE_SET},
+                { type:#FOR_ACTION , dataAction: 'RejectTravel', label: 'Reject Travel' ,invocationGrouping: #CHANGE_SET},
+                { type:#FOR_ACTION , dataAction: 'DeductDiscount', label: 'Discount' ,invocationGrouping: #CHANGE_SET}]
+  @UI.identification: [{  position: 10, importance: #HIGH ,label: 'TravelId' },
+                { type: #FOR_ACTION, dataAction: 'AcceptTravel', label: 'Accept Travel' ,invocationGrouping: #CHANGE_SET},
+                { type:#FOR_ACTION , dataAction: 'RejectTravel', label: 'Reject Travel' ,invocationGrouping: #CHANGE_SET},
+                { type:#FOR_ACTION , dataAction: 'DeductDiscount', label: 'Discount' ,invocationGrouping: #CHANGE_SET}]
+  TravelId;
+  @UI.lineItem: [{ position: 20, importance: #HIGH }]
+  @UI.identification: [{ position: 20, importance: #HIGH , label: 'AgencyId' }]
+  @Consumption.valueHelpDefinition: [{ entity:{ name: 'ZVK_AGENCY_VH', element: 'AgencyID' },useForValidation: true }]
+  AgencyId;
+  @UI.lineItem: [{ position: 30, importance: #HIGH }]
+  @UI.identification: [{ position: 30, importance: #HIGH , label: 'CustomerId' }]
+  @Consumption.valueHelpDefinition: [{ entity:{ name: '/DMO/I_Customer_StdVH', element: 'CustomerID' }  }]
+  CustomerId;
+  @UI.lineItem: [{ position: 40, importance: #HIGH }]
+  @UI.identification:  [{ position: 40, importance: #HIGH ,label: 'BeginDate'}]
+  BeginDate;
+  @UI.lineItem: [{ position: 50, importance: #HIGH }]
+  @UI.identification: [{ position: 50, importance: #HIGH,label: 'EndDate'}]
+  EndDate;
+  @UI.lineItem: [{ position: 60, importance: #LOW }] //when we give importance low at lineitem level it won't display at lineitem level but it displays in object level'
+  @UI.identification:  [{ position: 60, importance: #HIGH,label: 'BookingFee' }]
+  BookingFee;
+  @UI.lineItem: [{ position: 70, importance: #HIGH }] //when we give importance HIGH at lineitem level it will display at lineitem level also in object level'
+  @UI.identification: [{ position: 70, importance: #HIGH,label: 'TotalPrice' }]
+  TotalPrice;
+//  @UI.lineItem: [{ position: 80, importance: #LOW }]
+//  @UI.identification:  [{ position: 80, importance: #LOW ,label: 'CurrencyCode' }]
+  @Consumption.valueHelpDefinition: [{entity:{ name: 'I_CurrencyStdVH' , element: 'Currency' } }]
+  CurrencyCode;
+  @UI.lineItem: [{ position: 90, importance: #HIGH }]
+  @UI.identification: [{ position: 90, importance:#HIGH ,label: 'Description' }]
+  Description;
+  @UI.lineItem: [{ position: 100, importance: #HIGH}]
+  @UI.identification:  [{ position: 100, importance: #HIGH,label: 'OverallStatus' }]
+  OverallStatus;
+//  @UI.lineItem: [{ position: 110, importance: #HIGH }]
+//  @UI.identification:  [{ position: 110, importance: #HIGH }]
+//  LocalCreatedBy;
+//  @UI.lineItem: [{ position: 120, importance: #HIGH }]
+//  @UI.identification:  [{ position: 120, importance: #HIGH }]
+//  LocalCreatedAt;
+//  @UI.lineItem: [{ position: 130, importance: #HIGH }]
+//  @UI.identification:  [{ position: 130, importance: #HIGH }]
+//  LocalLastChangedBy;
+//  @UI.lineItem: [{ position: 140, importance: #HIGH}]
+//  @UI.identification:  [{ position: 140, importance: #HIGH}]
+//  LocalLastChangedAt;
+//  @UI.lineItem: [{ position: 150, importance: #HIGH }]
+//  @UI.identification:  [{ position: 150, importance: #HIGH}]
+//  LastChangedAt;
+  /* Associations */
+  //_Booking;
+
+}
