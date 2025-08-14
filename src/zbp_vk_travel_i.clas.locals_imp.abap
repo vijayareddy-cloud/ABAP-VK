@@ -93,41 +93,42 @@ CLASS lsc_zvk_travel_i IMPLEMENTATION.
 
     IF delete-travel IS NOT INITIAL.
 
-*
-*DATA: lt_keys TYPE TABLE FOR READ ENTITY travel OF zvk_travel_i.
-*
-*lt_keys = VALUE #( FOR wa IN delete-travel ( TravelUuid = wa-TravelUuid ) ).
-*
-*READ ENTITIES OF zvk_travel_i
-*  ENTITY travel
-*  IMPORT FROM VALUE #( lt_keys )
-*  RESULT DATA(lt_travel).
-*
+      TYPES : BEGIN OF ty_travel_uuid,
+                TravelUuid TYPE sysuuid_x16,
+              END OF ty_travel_uuid.
 
-*    data : lt_travels type TABLE FOR read result ZVK_TRAVEL_I.
-*
-*    lt_travels = CORRESPONDING #( delete-travel ).
-*
-**
-*  READ ENTITIES OF zvk_travel_i in local mode
-*    ENTITY travel
-*    FIELDS ( TravelUuid )
-*     WITH CORRESPONDING #( lt_travel_keys )
-*    result data(lt_travel).
+      DATA : lt_travel     TYPE TABLE FOR READ RESULT zvk_travel_I,
+             ls_travel_log TYPE zvk_travel_log.
 
-*
-*      LOOP AT lt_travel ASSIGNING FIELD-SYMBOL(<lfs_travel_delete>).
-*
-*        IF delete-travel[ 1 ]-TravelUuid = cl_abap_behv=>flag_changed.
-*
-*          <lfs_travel_delete>-travelid = delete-travel[ 1 ]-TravelUuid.
-*
-*        ENDIF.
-*
-**        APPEND <lfs_travel_delete> TO  travel_log_update.
-*      ENDLOOP.
-*      MODIFY zvk_travel_log FROM TABLE @travel_log_update.
-    ENDIF..
+      lt_travel = CORRESPONDING #( delete-travel ).
+
+      SELECT FROM zvk_des_travel FIELDS *
+      FOR ALL ENTRIES IN @lt_travel
+      WHERE travel_uuid = @lt_travel-TravelUuid
+      INTO TABLE @DATA(lt_travels).
+
+
+      LOOP AT lt_travels INTO DATA(lfs_Delete_travel_log).
+
+        ls_travel_log = CORRESPONDING #( lfs_Delete_travel_log MAPPING travelid =  travel_id EXCEPT * ).
+
+        ls_travel_log-changing_operation = 'DELETE'.
+
+        GET TIME STAMP FIELD ls_travel_log-created_at.
+
+        TRY.
+            ls_travel_log-change_id = cl_system_uuid=>create_uuid_x16_static(  ).
+
+          CATCH cx_uuid_error.
+
+        ENDTRY.
+
+        APPEND ls_travel_log TO  travel_log_update.
+      ENDLOOP.
+
+      MODIFY zvk_travel_log FROM TABLE @travel_log_update.
+    ENDIF.
+
   ENDMETHOD.
 ENDCLASS.
 

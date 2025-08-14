@@ -16,7 +16,7 @@ etag master LocalLastChangedAt  //ENTITY LEVEL only
   create ( authorization : global );
   update;
   delete;
-  // field ( readonly ) TravelUuid;
+   field ( readonly ) TotalPrice;
   field ( numbering : managed, readonly ) TravelUuid;
     field ( readonly ) TravelId, OverallStatus;
 //  field ( mandatory : create, readonly : update ) TravelId, OverallStatus; //WE WILL GET A POPUP TYPE WHILE CREATING NEW TRAVEL
@@ -37,8 +37,6 @@ etag master LocalLastChangedAt  //ENTITY LEVEL only
     validation validateDates;
   }
   //draft related
-
-
 
 
   //Determinations

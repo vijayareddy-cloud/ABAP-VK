@@ -12,7 +12,6 @@ CLASS zvk_cl_explore_eml DEFINITION
   PRIVATE SECTION.
 ENDCLASS.
 
-
 CLASS zvk_cl_explore_eml IMPLEMENTATION.
 
   METHOD if_oo_adt_classrun~main.
@@ -90,14 +89,15 @@ CLASS zvk_cl_explore_eml IMPLEMENTATION.
     MODIFY ENTITIES OF zvk_travel_i
     ENTITY Travel
     CREATE
-    FIELDS ( AgencyId BookingFee TotalPrice CurrencyCode Description OverallStatus BeginDate EndDate )
+*    FIELDS ( AgencyId BookingFee TotalPrice CurrencyCode Description OverallStatus BeginDate EndDate )
+   FIELDS ( AgencyId BookingFee  CurrencyCode Description  BeginDate EndDate )
     WITH VALUE #( ( %cid = 'DUMMY7'
                                     AgencyId = 8756
                                     BookingFee = 875
-                                    TotalPrice = 8789
+*                                    TotalPrice = 8789
                                     CurrencyCode = 'USD'
                                     Description = 'Confirmed'
-                                    OverallStatus = 'Y'
+*                                    OverallStatus = 'Y'
                                     BeginDate = cl_abap_context_info=>get_system_date(  )
                                     EndDate = cl_abap_context_info=>get_system_date(  ) + 3 ) )
 
@@ -124,8 +124,6 @@ CLASS zvk_cl_explore_eml IMPLEMENTATION.
                                        ) )
                  ) )
 
-
-
     FAILED FINAL(lt_create_failed2)
     REPORTED FINAL(lt_create_reported2)
     MAPPED FINAL(lt_mapped_final).
@@ -145,13 +143,14 @@ CLASS zvk_cl_explore_eml IMPLEMENTATION.
 
     MODIFY ENTITY zvk_travel_i
     CREATE
-    FIELDS ( AgencyId Description BookingFee TotalPrice CurrencyCode BeginDate EndDate )
+*    FIELDS ( AgencyId Description BookingFee TotalPrice CurrencyCode BeginDate EndDate )
+FIELDS ( AgencyId Description BookingFee CurrencyCode BeginDate EndDate )
     WITH VALUE #( ( %cid = 'Dummy3'
                     AgencyId      = '70028'
                     Description   = 'New Agency 70028 v3'
                     BookingFee    = 16
-                    TotalPrice    = 4500
-                    OverallStatus = 'O'
+*                    TotalPrice    = 4500
+*                    OverallStatus = 'O'
                     CurrencyCode  = 'USD'
                     BeginDate     = cl_abap_context_info=>get_system_date(  )
                     EndDate       = cl_abap_context_info=>get_system_date(  ) + 3 )
@@ -190,15 +189,12 @@ CLASS zvk_cl_explore_eml IMPLEMENTATION.
     REPORTED FINAL(lt_create_reported3)
     MAPPED FINAL(lt_create_mapped3).
 
-        COMMIT ENTITIES
-    RESPONSE OF zvk_travel_i
-    FAILED DATA(lt_commit_failed3)
-    REPORTED DATA(lt_commit_reported3).
+    COMMIT ENTITIES
+RESPONSE OF zvk_travel_i
+FAILED DATA(lt_commit_failed3)
+REPORTED DATA(lt_commit_reported3).
 
     out->write( 'Case2 v2: Trips and reservations for these trips have been created!' ).
-
-
-
 
 *-> EML Update
 
@@ -218,8 +214,6 @@ CLASS zvk_cl_explore_eml IMPLEMENTATION.
     COMMIT ENTITIES.
 
     out->write( 'Entity Updated Successfully' ).
-
-
 *-> EML Delete
 
     MODIFY ENTITIES OF zvk_travel_i
@@ -289,10 +283,17 @@ CLASS zvk_cl_explore_eml IMPLEMENTATION.
 
     out->write( 'Trying to read a record that does not exist' ).
 
+********************************************************************
+*To delete the entries in the log table.
+    SELECT FROM zvk_travel_log FIELDS *
+    INTO TABLE @DATA(lt_logs).
 
+    DELETE zvk_travel_log FROM TABLE @lt_logs.
 
+    COMMIT WORK.
 
-
+    out->write( 'Deleted' ).
+*******************************************************************
   ENDMETHOD.
 
 
@@ -305,8 +306,6 @@ CLASS zvk_cl_explore_eml IMPLEMENTATION.
           mapped_resp   TYPE RESPONSE FOR MAPPED zvk_travel_i, "response parameters
           failed_resp   TYPE RESPONSE FOR FAILED zvk_travel_i,
           reported_resp TYPE RESPONSE FOR REPORTED zvk_travel_i.
-
-
 
     cr_tab = VALUE #(
             ( %cid   = 'cid1'
@@ -330,7 +329,7 @@ CLASS zvk_cl_explore_eml IMPLEMENTATION.
 
 
     "EML statement, short form
-    "root_ent must be the full name of the root entity, it is basically the name of the BDEF
+    "root_entity must be the full name of the root entity, it is basically the name of the BDEF
 
     MODIFY ENTITY zvk_travel_i
       CREATE "determines the kind of operation
